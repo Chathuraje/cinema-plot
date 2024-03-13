@@ -4,6 +4,7 @@ from app.utils.config import loadEnv
 import json
 from app.libraries.controller import database
 from app.libraries.controller import wikipedia
+from app.utils import storage
 
 logger = logger.getLogger()
 
@@ -73,6 +74,15 @@ def is_valid_trending_media(media):
     return all(field in media for field in required_fields)
 
 def find_trending_media():
+    video_data = database.get_ongoing_video_details()
+    if video_data != None:
+        logger.info("Ongoing data already exists in the database")
+        logger.info(f'Trending video found for video_id: {video_data["id"]} | media_type: {video_data["media_type"]} -> Title: {video_data["title"]}')
+        
+        return video_data
+    
+    
+    logger.info("Getting trending movies and tv shows from the database")
     page = 1
     uploaded_ids = database.get_uploaded_video_datas()
     
@@ -128,5 +138,6 @@ def find_trending_media():
                 'plot': plot
             }
             
+            storage.create_folders(video_data['id'])
             return database.store_ongoing_video_data(info)
         page += 1

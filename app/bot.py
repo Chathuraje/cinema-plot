@@ -1,6 +1,6 @@
 from app.utils import logger
 from app.libraries.controller import themoviedb
-from app.libraries.controller import database
+from app.libraries.controller import youtube
 
 logger = logger.getLogger()
 
@@ -10,16 +10,10 @@ def start_bot():
     global video_id
     
     logger.info("Bot started")
-    ongoing_video_id = database.get_ongoing_video_id()
+    video_data = themoviedb.find_trending_media()    
     
-    if ongoing_video_id != None:
-        logger.info("Ongoing data already exists in the database")
-        video_data = database.get_ongoing_video_details()
-    else:
-        logger.info("Getting trending movies and tv shows from the database")
-        video_data = themoviedb.find_trending_media()
+    youtube.download_video(video_data['youtube'], video_data['id'])
     
-    print(video_data)
     
     
     

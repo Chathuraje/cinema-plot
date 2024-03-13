@@ -3,16 +3,6 @@ from app.utils import logger
 
 logger = logger.getLogger()
 
-def get_ongoing_video_id():
-    ongoing_collection = mongodb.get_collection("ongoing_collection")
-    
-    ongoing_data = ongoing_collection.find_one()
-    
-    if ongoing_data is None:
-        return None
-    
-    return ongoing_data['id']
-
 def get_uploaded_video_datas():
     logger.info("Loading uploaded video data")
     videos_collection = mongodb.get_collection("videos_collection")
