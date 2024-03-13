@@ -35,5 +35,4 @@ def loadEnv():
                 config_data[key] = value
         except Exception as e:
             print(f"Error reading .env file: {e}")
-    
     return config_data

@@ -12,7 +12,7 @@ def main():
         logger.info(f"Starting bot... {STAGE}")
 
         # Start Bot
-        bot.startBot()
+        bot.start_bot()
     except Exception as e:
         logger.error("Error: %s", e)
         logger.error("Bot failed to start")
