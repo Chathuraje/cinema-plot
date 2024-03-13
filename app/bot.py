@@ -18,12 +18,8 @@ def start_bot():
     else:
         logger.info("Getting trending movies and tv shows from the database")
         video_data = themoviedb.find_trending_media()
-
-    
     
     print(video_data)
-    
-    
     
     
     

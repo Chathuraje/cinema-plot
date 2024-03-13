@@ -1,4 +1,7 @@
 from app.utils import mongodb
+from app.utils import logger
+
+logger = logger.getLogger()
 
 def get_ongoing_video_id():
     ongoing_collection = mongodb.get_collection("ongoing_collection")
@@ -11,6 +14,7 @@ def get_ongoing_video_id():
     return ongoing_data['id']
 
 def get_uploaded_video_datas():
+    logger.info("Loading uploaded video data")
     videos_collection = mongodb.get_collection("videos_collection")
     
     video_ids = []
@@ -33,9 +37,13 @@ def store_ongoing_video_data(data):
     data_list = [data]
     ongoing_collection.insert_many(data_list)
     
+    clear_ongoing_video_data()
+    ongoing_collection = mongodb.get_collection("videos_collection")
+    ongoing_collection.insert_many(data_list)
+    
     return get_ongoing_video_details()
 
-def clear_onfongoing_video_data():
+def clear_ongoing_video_data():
     ongoing_collection = mongodb.get_collection("ongoing_collection")
     ongoing_collection.delete_many({})
     

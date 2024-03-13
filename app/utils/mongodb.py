@@ -7,7 +7,7 @@ logger = logger.getLogger()
 MONGODB_USERNAME = loadEnv().get('MONGODB_USERNAME')
 MONGODB_PASSWORD = loadEnv().get('MONGODB_PASSWORD')
 MONGODB_URL = loadEnv().get('MONGODB_URL')
-MONGODB_NAME = loadEnv().get('MONGODB_NAME')
+MONGODB_DB_NAME = loadEnv().get('MONGODB_DB_NAME')
 
 
 def connect():
@@ -23,7 +23,7 @@ def connect():
         logger.error(f"Error: {e}")
         logger.error("Failed to connect to MongoDB")
         
-    db = client[MONGODB_NAME]
+    db = client[MONGODB_DB_NAME]
     
     return db
 

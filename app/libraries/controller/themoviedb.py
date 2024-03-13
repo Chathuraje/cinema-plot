@@ -3,6 +3,7 @@ from app.utils import logger
 from app.utils.config import loadEnv
 import json
 from app.libraries.controller import database
+from app.libraries.controller import wikipedia
 
 logger = logger.getLogger()
 
@@ -39,11 +40,6 @@ def get_trending_media(page=1):
     
     return trending_response['results']
 
-def get_media_details(media_type, video_id):
-    media_details_url = f"https://api.themoviedb.org/3/{media_type}/{video_id}?language=en-US"
-    
-    return send_request(media_details_url)
-
 def get_video_details(media_type, video_id):
     video_details_url = f"https://api.themoviedb.org/3/{media_type}/{video_id}/videos?language=en-US"
     video_details = send_request(video_details_url)
@@ -64,14 +60,16 @@ def get_video_keywords(media_type, video_id):
         return [tag["name"] for tag in keywords["results"]]
     else:
         return None
-    
-
-def is_valid_media(media):
-    required_fields = ['imdb_id', 'status']
-    return all(field in media for field in required_fields)
 
 def is_valid_trending_media(media):
-    required_fields = ['id', 'title', 'overview', 'media_type']
+    required_fields = ['id', 'overview', 'media_type']
+    if media.get('media_type') == 'movie':
+        required_fields.append('title')
+        required_fields.append('release_date')
+    elif media.get('media_type') == 'tv':
+        required_fields.append('name')
+        required_fields.append('first_air_date')
+        
     return all(field in media for field in required_fields)
 
 def find_trending_media():
@@ -82,41 +80,52 @@ def find_trending_media():
         trending_media = get_trending_media(page)
                 
         for result in trending_media:
+            title = result['title'] if result['media_type'] == 'movie' else result['name']
+            
+            logger.info(f'Trending video found for video_id: {result["id"]} | media_type: {result["media_type"]} -> Title: {title}')
             if not is_valid_trending_media(result):
+                logger.error(f'Invalid trending media: {result}')
                 continue
             
             video_id = result['id']
             if video_id in uploaded_ids:
+                logger.info(f'Uploaded video with video_id: {video_id} already exists in the database')
                 continue
             
-            title = result['title'] if result['media_type'] == 'movie' else result['name']
             overview = result['overview']
+            release_date = result['release_date'] if result['media_type'] == 'movie' else result['first_air_date']
             
             media_type = result['media_type']
             if media_type not in ['movie', 'tv']:
-                continue
-            
-            media_details = get_media_details(media_type, video_id)
-            if not is_valid_media(media_details):
+                logger.error(f'Invalid media type: {media_type}')
                 continue
             
             youtube_key = get_video_details(media_type, video_id)
             if youtube_key is None:
+                logger.error(f'Youtube key not found for video_id: {video_id}')
                 continue
             
             keywords = get_video_keywords(media_type, video_id)
             if keywords is None:
+                logger.error(f'Keywords not found for video_id: {video_id}')
                 continue
+            
+            plot = wikipedia.get_movie_plot(title, release_date)
+            if plot is None:
+                logger.error(f'Plot not found for video_id: {video_id}')
+                continue
+            
+            logger.info(f'Video selected: {video_id} | title: {title}')
             
             info = {
                 'id': video_id,
                 'title': title,
                 'overview': overview,
                 'media_type': media_type,
-                'imdb_id': media_details['imdb_id'],
-                'status': media_details['status'],
+                'release_date': release_date,
                 'youtube': youtube_key,
-                'keywords': keywords
+                'keywords': keywords,
+                'plot': plot
             }
             
             return database.store_ongoing_video_data(info)
