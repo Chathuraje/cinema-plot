@@ -37,10 +37,6 @@ def store_ongoing_video_data(data):
     data_list = [data]
     ongoing_collection.insert_many(data_list)
     
-    clear_ongoing_video_data()
-    ongoing_collection = mongodb.get_collection("videos_collection")
-    ongoing_collection.insert_many(data_list)
-    
     return get_ongoing_video_details()
 
 def clear_ongoing_video_data():
