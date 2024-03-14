@@ -1,6 +1,7 @@
 from app.utils import logger
 from app.libraries.controller import themoviedb
 from app.libraries.controller import youtube
+from app.libraries.controller import chatgpt
 
 logger = logger.getLogger()
 
@@ -11,10 +12,9 @@ def start_bot():
     
     logger.info("Bot started")
     video_data = themoviedb.find_trending_media()    
-    
     youtube.download_video(video_data['youtube'], video_data['id'])
     
-    
+    story = chatgpt.generate_script(video_data)
     
     
 def stop_bot():
