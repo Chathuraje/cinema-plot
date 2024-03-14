@@ -70,7 +70,7 @@ def generate_script(video_data):
     conversation = [
         {
             "role": "system",
-            "content": "You will be provided with a movie plot and the title of it.  \n Craft a short engaging summarize story suitable for a YouTube short video that aims to captivate the viewer's curiosity and enjoyment without revealing any spoilers. Utilize the plot elements provided from the specified movie but infuse the narrative with a more serious tone and enhance its emotional resonance to make it more endearing.\n"
+            "content": "You will be provided with a movie plot and the title of it.  \n Craft a engaging summarize story to 250 words that suitable for a YouTube video that aims to captivate the viewer's curiosity and enjoyment without revealing any spoilers. Utilize the plot elements provided from the specified movie but infuse the narrative with a more serious tone and enhance its emotional resonance to make it more endearing.\n"
         },
         {
             "role": "user",

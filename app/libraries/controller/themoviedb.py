@@ -138,6 +138,6 @@ def find_trending_media():
                 'plot': plot
             }
             
-            storage.create_folders(video_data['id'])
+            storage.create_folders(info['id'])
             return database.store_ongoing_video_data(info)
         page += 1
