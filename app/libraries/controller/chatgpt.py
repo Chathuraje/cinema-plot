@@ -2,6 +2,7 @@ from openai import OpenAI
 from app.utils import logger
 from app.utils.config import loadEnv
 import os
+import json
 
 logger = logger.getLogger()
 OPENAPI_API_KEY = loadEnv().get('OPENAPI_API_KEY')
@@ -62,7 +63,7 @@ def generate_script(video_data):
         with open(file_path, 'r') as file:
             story = file.read()
             if story != '':
-                logger.info(f"Story Found in Storage: {story}")
+                logger.info(f"Story Found in Storage")
                 return story
                 
     
@@ -91,5 +92,40 @@ def generate_script(video_data):
     
     return story
 
+
+def generate_transcript(audio_file, transcript_path):
+    logger.info(f"Generating transcript from audio file")
+    
+    client = initialize_openai()
+    
+    transcription = client.audio.transcriptions.create(
+        model="whisper-1", 
+        file=audio_file, 
+        response_format="srt"
+    )
+    
+    print(transcription)
+
+    segment_list = []
+    text = ""
+    for segment in transcription.segments:
+        start_time = segment['start']
+        end_time = segment['end']
+        if text == segment['text']:
+            continue
+        text = segment['text']
+        duration = end_time - start_time
+        segment_list.append({
+            "start": start_time,
+            "end": end_time,
+            "duration": duration,
+            "text": text
+        })
+
+    print(segment_list)
+    
+    # return transcript
+    # with open(transcript_path, 'w') as f:
+    #     json.dump(segment_list, f, indent=4)
     
         

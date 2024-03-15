@@ -4,7 +4,7 @@ from app.utils import logger
 logger = logger.getLogger()
 
 def create_folders(video_id):
-    subdirectory_names = ['data']
+    subdirectory_names = ['youtube']
     
     folder_path = Path(f'app/storage/{video_id}')
     if not folder_path.exists():

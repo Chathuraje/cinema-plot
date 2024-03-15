@@ -69,6 +69,6 @@ def generate_voice(video_data, story):
 
     if not success:
         logger.error("All API keys failed. Unable to set a valid API key.")
-        exit()
+        return
 
     generate_audio(video_data['id'],  story)
