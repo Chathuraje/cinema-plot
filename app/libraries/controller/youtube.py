@@ -4,7 +4,8 @@ from pathlib import Path
 from pytube import YouTube
 import os
 from app.libraries.controller import assemblyai
-import json
+# import json
+# from youtube_transcript_api import YouTubeTranscriptApi
 
 logger = logger.getLogger()
 
@@ -43,9 +44,6 @@ def download_youtube_video(youtube_key, video_id):
         logger.info(f'Transcript already generated for video_id: {video_id}')
     
     return youtube_key
-
-from youtube_transcript_api import YouTubeTranscriptApi
-
 
 # def remove_unnecessary_elements(text):
 #     if text == None:
