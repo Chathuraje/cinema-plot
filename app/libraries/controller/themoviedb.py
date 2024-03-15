@@ -92,6 +92,9 @@ def find_trending_media():
         for result in trending_media:
             title = result['title'] if result['media_type'] == 'movie' else result['name']
             
+            if not result['original_language'] == 'en':
+                continue
+            
             logger.info(f'Trending video found for video_id: {result["id"]} | media_type: {result["media_type"]} -> Title: {title}')
             if not is_valid_trending_media(result):
                 logger.error(f'Invalid trending media: {result}')

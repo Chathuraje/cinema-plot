@@ -30,18 +30,18 @@ def generate_transcript(mp3_file_path, transcript_path):
             sentences_data = []
             
             for sentence in sentences:
-                start_seconds = round(sentence.start / 1000, 3)
-                end_seconds = round(sentence.end / 1000, 3)
-                duration_seconds = round(end_seconds - start_seconds, 3)
+                start_seconds = sentence.start
+                end_seconds = sentence.end
+                duration_seconds = (end_seconds - start_seconds)
                 
                 words = sentence.words
                 words_data = []
                 total_word_duration = 0
                 
                 for word in words:
-                    word_start_seconds = round(word.start / 1000, 3)
-                    word_end_seconds = round(word.end / 1000, 3)
-                    word_duration_seconds = round(word_end_seconds - word_start_seconds, 3)
+                    word_start_seconds = word.start
+                    word_end_seconds = word.end
+                    word_duration_seconds = (word_end_seconds - word_start_seconds)
                     
                     word_data = {
                         "start": word_start_seconds,
