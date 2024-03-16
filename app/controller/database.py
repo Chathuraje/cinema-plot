@@ -3,13 +3,13 @@ from app.utils import logger
 
 logger = logger.getLogger()
 
-def get_uploaded_video_datas():
+def get_uploaded_video_ids():
     logger.info("Loading uploaded video data")
     videos_collection = mongodb.get_collection("videos_collection")
     
     video_ids = []
     for video in videos_collection.find():
-        video_ids.append(video['id'])
+        video_ids.append(video['unique_id'])
     
     return video_ids
 
@@ -21,13 +21,11 @@ def get_ongoing_video_details():
     return ongoing_data
 
 
-def store_ongoing_video_data(data):
+def store_ongoing_video_data(selcted_movie):
     ongoing_collection = mongodb.get_collection("ongoing_collection")
+    ongoing_collection.insert_one(selcted_movie.dict())
     
-    data_list = [data]
-    ongoing_collection.insert_many(data_list)
-    
-    return get_ongoing_video_details()
+    return True
 
 def clear_ongoing_video_data():
     ongoing_collection = mongodb.get_collection("ongoing_collection")
